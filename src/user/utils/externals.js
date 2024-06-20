@@ -1,0 +1,3 @@
+export const FLWAPI = {
+    FLW_PUB_KEY:'FLWPUBK_TEST-8c7bc4adb4679ffc3478df64ca953498-X'
+}
