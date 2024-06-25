@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ENDPOINTS } from '../../../endpoint';
-import Spinner from  '../../../user/utils/Spinner'
+import Spinner from "../../../user/utils/Spinner";
 import axios from 'axios';
 
 const options = {
@@ -31,7 +31,7 @@ const Adtopup = () => {
     e.preventDefault();
     setLoading(true);  
 
-    axios.get(`${ENDPOINTS.baseUrl}/Adtopup`, {
+    axios.get(`${ENDPOINTS.baseUrl}/topupuser`, {
       params: {
         network,
         amount,
@@ -40,10 +40,11 @@ const Adtopup = () => {
         userId: user._id
       }
     })
-    .then((response) => {    
+    .then((response) => {
       setLoading(false);
-      if (response.data.msg == "success") {
+      if (response.status.msg == "success") {
         toast.success("Recharge successful", options);
+        console.log(response.status.msg == "success")
          setLoading(false)
       } else {
         toast.error("Topup failed", options);
@@ -56,6 +57,7 @@ const Adtopup = () => {
       setLoading(false);
     });
   };
+
   return (
     <div
       className="container-fluid justify-center body-bg-white border-0 shadow-lg mb-5 mt-5 text-dark rounded card"

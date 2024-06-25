@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { FLWAPI } from "../../../user/utils/externals";
-import { useFlutterwave, closePaymentModal } from "flutterwave-react-v3";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ENDPOINTS } from "../../../endpoint";
@@ -23,75 +21,62 @@ const FundAccount = () => {
     theme: "light",
   };
 
-  let user = localStorage.getItem("fazUser");
-  user = JSON.parse(user);
-  // const userId=userId
   const Goto = useNavigate();
 
-  const config = {
-    public_key: FLWAPI.FLW_PUB_KEY,
-    tx_ref: Date.now(),
-    amount: amt,
-    currency: 'NGN',
-    payment_options: "card",
-    customer: {
-      email: user.email,
-      phone_number: user.phone,
-      name: user.fullName,
-    },
-    customizations: {
-      title: 'Funding My FazVas Account',
-      description: 'Funding My FazVas Wallet',
-      logo: 'https://st2.depositphotos.com/4403291/7418/v/450/depositphotos_74189661-stock-illustration-online-shop-log.jpg',
-    },
+  const handleFundingForm = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const result = await axios.put(`${ENDPOINTS.baseUrl}/funduser`, {
+        email,
+        amount: amt,
+        txId: Math.floor(Math.random() * 200000000).toString(),
+        adminEmail:JSON.parse(localStorage.getItem("fazUser")).email
+      });
+
+      setLoading(false);
+
+      if (result.data.mystatus === "success") {
+        toast.success("Wallet funded successfully!", options);
+        Goto("/addashboard/adhome");
+      } else {
+        toast.error("Funding failed. Please try again later.", options);
+      }
+    } catch (error) {
+      console.log("Error funding user wallet:", error);
+      toast.error("Error funding user wallet. Please try again later.", options);
+      setLoading(false);
+    }
   };
 
-  const handleFlutterPayment = useFlutterwave(config);
+  const validateForm = () => {
+    if (!email.trim()) {
+      toast.error("Email is required.", options);
+      return false;
+    }
 
-  const handleFundingForm = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    handleFlutterPayment({
-      callback: async (response) => {
-        console.log(response);
-        if (response.status === "successful") {
-          try {
-            const result = await axios.put(`${ENDPOINTS.baseUrl}/funduser`, {
-              email,
-              amount: amt,
-              txId: response.transaction_id,
-              // userId: userId,
+    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+      toast.error("Invalid email format.", options);
+      return false;
+    }
 
-            });
-            setLoading(false);
-            if (result.data.mystatus === "Success") {
-              toast.success("Wallet funded successfully!", options);
-              Goto("/addashboard/adhome");
-            } else {
-              toast.error("Topup failed", options);
-            }
-          } catch (error) {
-            console.log(error)
-            toast.error("Error funding user wallet:", error.message, options);
-            setLoading(false);
-          }
-          closePaymentModal();
-        } else {
-          setLoading(false);
-        }
-      },
-      onClose: () => {
-        setLoading(false);
-      },
-    });
+    if (amt < 50 || amt > 100000) {
+      toast.error("Amount must be between 50 and 100,000.", options);
+      return false;
+    }
+
+    return true;
   };
 
   return (
     <>
-      <div
-        className="container justify-center mt-5 mb-5 text-dark rounded"
-        style={{ maxWidth: 400 }}
-      >
+      <div className="container justify-center mt-5 mb-5 text-dark rounded" style={{ maxWidth: 400 }}>
         <form className="p-3 fw-bolder card" onSubmit={handleFundingForm}>
           <div className="mb-3">
             <label htmlFor="email" className="form-label">
@@ -102,7 +87,7 @@ const FundAccount = () => {
               className="form-control"
               id="email"
               name="email"
-              placeholder="eg fazvas@gmail.com"
+              placeholder="e.g., fazvas@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -117,7 +102,7 @@ const FundAccount = () => {
               className="form-control"
               id="amount"
               name="amount"
-              placeholder="amount eg 2000"
+              placeholder="Amount e.g., 2000"
               min={50}
               max={100000}
               value={amt}

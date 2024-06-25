@@ -1,3 +1,4 @@
 export const ENDPOINTS ={
-    baseUrl:'http://localhost:3010',
+    baseUrl:'https://fazapi.vercel.app',
+    // baseUrl:'http://localhost:3010',
 }

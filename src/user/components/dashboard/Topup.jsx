@@ -44,6 +44,7 @@ const Topup = () => {
       setLoading(false);
       if (response.data.msg == "success") {
         toast.success("Recharge successful", options);
+        console.log(response.data.msg == "success")
          setLoading(false)
       } else {
         toast.error("Topup failed", options);
