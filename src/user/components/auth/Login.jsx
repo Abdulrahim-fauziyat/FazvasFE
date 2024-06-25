@@ -42,15 +42,12 @@ const Login = () => {
     axios.post(`${ENDPOINTS.baseUrl}/login`,{ email, password })
     .then((response) => {
         console.log(response);
-        if (response.data.msg === "success" && response.statusText === "OK") {
+        if (response.data.msg == "success" ) {
            toast.success(response.data.msg,options);
            setLoading(false);
            localStorage.setItem("fazUser",JSON.stringify(response.data.user));
            // wait for 2 seconds 
-           setTimeout( ()=>{
-             goTo('/dashboard/Home');
-           },2000);
-          
+           setTimeout( ()=>{  goTo('/dashboard/Home');   },2000); 
         } else {
           toast.error("Login failed", options);
           alert("invalid details")
