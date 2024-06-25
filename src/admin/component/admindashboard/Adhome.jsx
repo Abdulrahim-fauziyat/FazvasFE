@@ -40,14 +40,12 @@ const Adhome = () => {
         setIsLoaded(true);
       }
     };
-
-
-        
+   
     const fetchFundingHistory = async () => {
       try {
-        const response=await axios.get(`${ENDPOINTS.baseUrl}/TotalAdminFunds`,{params: { userId: user._id } } );
+        const response = await axios.get(`${ENDPOINTS.baseUrl}/TotalAdminFunds`,);
         console.log(response.data.result);
-        const TotalFunding =response.data.result?.reduce((ac, cur) => ac + cur.txAmount ,0)  ;
+        const TotalFunding =  response.data.result?.reduce((ac, cur) => ac + cur.txAmount ,0)  ;
 
         setTotalFunding(TotalFunding);
         setIsFundingFetched(true);
@@ -60,12 +58,11 @@ const Adhome = () => {
     
     const fetchTopupData = async () => {
       try {
-        const response = await axios.get(`${ENDPOINTS.baseUrl}/AdminTotalTopupup`, {
-          params: { userId: user?._id }
-        });
+        const response = await axios.get(`${ENDPOINTS.baseUrl}/AdminTotalTopupup`,);
 
         console.log(response.data.result);
-        const TotalTopup=response.data.result?.reduce((ac, cur) => ac + cur.txAmount ,0) ;
+        const TotalTopup =  response.data.result?.reduce((ac, cur) => ac + cur.txAmount ,0) ;
+
 
         setTotaltopup(TotalTopup);
         setIsTopupFetched(true);
@@ -104,7 +101,7 @@ const Adhome = () => {
           <div className="card-header">Σ Funding</div>
           <div className="card-body text-primary">
             <h5 className="card-title">
-              NGN {totalFunding.toLocaleString('en-US')}
+              NGN{isLoaded ? totalFunding.toLocaleString('en-US')  : <Spinner />}
             </h5>
           </div>
         </div>

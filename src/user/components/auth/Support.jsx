@@ -1,6 +1,8 @@
 import React from "react";
 import Nav from "../Nav";
 import Footer from "../Footer";
+import Spinner from "../../utils/Spinner";
+import axios from "axios";
 
 const Support = () => {
   return (
@@ -16,7 +18,7 @@ const Support = () => {
               hesitate to reach out to our support team.
             </p>
             <p className="fw-bold">Email: support@fazvas.com.ng</p>
-            <p className="fw-bold">Phone: +234-XXX-XXXXXXX</p>
+            <p className="fw-bold">Phone: +234-8108398148</p>
           </div>
           <div className="col-md-6">
             <h3>Frequently Asked Questions (FAQs)</h3>
